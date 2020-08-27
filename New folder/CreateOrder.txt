@@ -1,0 +1,19 @@
+*** Settings ***
+Library           AutoItLibrary
+Library           Selenium2Library
+Resource          CommonUsedKeywords.txt
+Library           requests
+Library           RequestsLibrary
+Library           HttpLibrary.HTTP
+
+*** Test Cases ***
+TC01-CreateOrder
+    HttpLibrary.HTTP.Create Http Context    maps.googleapis.com/maps/api     https
+    HttpLibrary.HTTP.GET    /place/nearbysearch/json?location=-33.8670522,151.1957362&radius=1500&type=restaurant&keyword=cruise&key=AIzaSyDuKYzibovgtRYfIzt6Sb5c5efzoi1tcVc
+
+${EMPTY}
+    ${url}    Set Variable    http://dummy.restapiexample.com/
+    ${proxy}    Set Variable    oproxy.fg.rbc.com:8080
+    ${headers}    Create Dictionary    Cache-Control    no-cache
+    RequestsLibrary.Create Session    sample    ${url}    ${headers}    ${proxy}
+    ${res}    requests.Get    http://dummy.restapiexample.com/api/v1/employees/

@@ -1,0 +1,46 @@
+*** Settings ***
+Library           ExcelLibrary
+
+*** Variables ***
+${stestcaseNo}    ${EMPTY}
+${ssheetname}     ${EMPTY}
+${sColumnname}    ${EMPTY}
+${columncount}    ${EMPTY}
+${y}              ${EMPTY}
+${Header}         ${EMPTY}
+${Columnnum}      ${EMPTY}
+${itotalrows}     ${EMPTY}
+${irownumber}     ${EMPTY}
+${Ssearcheddata}    ${EMPTY}
+${TC_Num}         ${EMPTY}
+${Sheetname}      ${EMPTY}
+${TestcCasename}    ${EMPTY}
+${TestCaseColumn}    ${EMPTY}
+${sData}          ${EMPTY}
+
+*** Keywords ***
+Load Excel Data
+    [Arguments]    ${Sheetname}    ${TestcCasename}    ${TestCaseColumn}
+    Open Excel Document    login.xlsx    Sheet1
+    ${sData}    Get data from Excel with given column    ${Sheetname}    ${TestcCasename}    ${TestCaseColumn}
+    Log    ${sData}
+    [Return]    ${sData}
+
+Get data from Excel with given column
+    [Arguments]    ${ssheetname}    ${stestcaseNo}    ${sColumnname}
+    log    ${sColumnname}
+    ${columncount}    Count Column    ${ssheetname}
+    log    ${columncount}
+    FOR    ${y}    IN RANGE    1    ${${columncount}+1}
+        ${Header}    Read Excel Cell    1    ${y}    ${ssheetname}
+        Run Keyword If    '${Header}'=='${sColumnname}'    Set Test Variable    ${Columnnum}    ${y}
+    Log    ${Columnnum}
+    ${itotalrows}    Count Row    ${ssheetname}
+    END
+    FOR    ${irownumber}    IN RANGE    1    ${itotalrows}+1
+        ${TC_Num}    Read Excel Cell    ${irownumber}    1    ${ssheetname}
+        ${Ssearcheddata}    Run Keyword If    "${stestcaseNo}"=="${TC_Num}"    Read Excel Cell    ${irownumber}    ${Columnnum}    ${ssheetname}
+        Run Keyword If    "${stestcaseNo}"=="${TC_Num}"    Exit For Loop
+    END
+    Close Current Excel Document
+    [Return]    ${Ssearcheddata}

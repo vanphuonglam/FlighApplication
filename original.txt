@@ -1,0 +1,32 @@
+*** Settings ***
+Library           DatabaseLibrary
+Library           Collections
+Library           SeleniumLibrary
+
+*** Test Cases ***
+TC01DatabaseAutomation
+    Connect To Database    pymssql    TestDB    TestSQL    test123    localhost    1433
+    @{queryResults}    Description    Select * from Student
+    Log Many    @{queryResults}
+    @{queryResults}    Query    Select * from Student
+    Log Many    @{queryResults}
+    ${COUNT}    Row Count    Select * from Student
+    LOG    ${COUNT}
+    Row Count Is Equal To X    Select * from Student    2
+    Table Must Exist    Student
+    Check If Exists In Database    select FirstName from Student where LastName='Sharma'
+
+TC02
+    Connect To Database    pymssql    TestDB1    testuser123    test123    localhost    1433
+    Table Must Exist    NgenDigital
+    @{queryresults}    Query    select Username from NgenDigital where id=1
+    @{var5}    Convert To List    @{queryresults}
+    @{queryresults1}    Query    select Password from NgenDigital where id=1
+    @{var6}    Convert To List    @{queryresults1}
+    Open Browser    https://ngendigital.com/demo-application    Chrome
+    Maximize Browser Window
+    Select Frame    id=iframe-014
+    Wait Until Keyword Succeeds    2    1    Input Text    xpath://input[@type='email']    @{var5}
+    Wait Until Keyword Succeeds    2    1    Input Text    xpath://input[@type='password']    @{var6}
+    Wait Until Keyword Succeeds    2    1    Click Element    xpath://div[contains(text(),'Sign In')]
+    [Teardown]    Close Browser

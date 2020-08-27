@@ -1,0 +1,43 @@
+*** Settings ***
+Library           ExcelLibrary
+
+*** Variables ***
+${stestcaseNo}    ${EMPTY}
+${ssheetname}     ${EMPTY}
+${sColumnname}    ${EMPTY}
+${columncount}    ${EMPTY}
+${y}              ${EMPTY}
+${Header}         ${EMPTY}
+${Columnnum}      ${EMPTY}
+${itotalrows}     ${EMPTY}
+${irownumber}     ${EMPTY}
+${Ssearcheddata}    ${EMPTY}
+${TC_Num}         ${EMPTY}
+${Sheetname}      ${EMPTY}
+${TestcCasename}    ${EMPTY}
+${TestCaseColumn}    ${EMPTY}
+${sData}          ${EMPTY}
+${x}              1
+
+*** Keywords ***
+Load Excel Data
+    [Arguments]    ${Sheetname}    ${TestcCasename}    ${TestCaseColumn}
+    Open Excel Document    login.xlsx    ${Sheetname}
+    ${sData}    Get data from Excel with given column    ${Sheetname}    ${TestcCasename}    ${TestCaseColumn}
+    Log    ${sData}
+    [Return]    ${sData}
+
+Get data from Excel with given column
+    [Arguments]    ${ssheetname}    ${stestcaseNo}    ${sColumnname}
+    log    ${sColumnname}
+    log    ${stestcaseNo}
+    ${columncount}    Count Column    ${ssheetname}
+    ${itotalrows}    Count Row    ${ssheetname}
+    ${irownumber}    Set Variable    ${0}
+    FOR    ${y}    IN RANGE    ${1}    ${${columncount}+1}
+        ${irownumber}    Set Variable    ${${irownumber}+1}
+        ${TC_Num}    Read Excel Cell    ${irownumber}    ${y}    ${ssheetname}
+        log    ${y}    ${irownumber}
+    END
+    Close Current Excel Document
+    [Return]    ${Ssearcheddata}

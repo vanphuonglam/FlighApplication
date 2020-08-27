@@ -1,0 +1,39 @@
+*** Settings ***
+Library           Selenium2Library
+Library           AutoItLibrary
+
+*** Keywords ***
+Login
+    Run    TrainingOrderSystem.exe    \    5
+    Win Wait Active    Sign in
+    ${text}    Win Get Text    Sign in
+    Log    ${text}
+    Control Set Text    Sign in    \    [NAME:txtUsername]    bp
+    sleep    1
+    Control Set Text    Sign in    \    [NAME:txtPassword]    password
+    sleep    1
+    Control Click    Sign in    \    [NAME:Button1]
+
+Enter Option
+    Win Wait Active    Options
+    Control Set Text    Options    \    [NAME:txtOption]    1
+    sleep    1
+    Control Click    Options    \    [NAME:Button2]
+
+Input Order
+    Win Wait Active    New Order
+    Control Set Text    New Order    \    [NAME:txtProductCode]    ABC-125
+    sleep    1
+    Control Set Text    New Order    \    [NAME:txtNumberReq]    3
+    sleep    1
+    Control Set Text    New Order    \    [NAME:txtUnitprice]    2.16
+    sleep    1
+    Control Set Text    New Order    \    [NAME:txtCostCentre]    101
+    sleep    2
+    Control Click    New Order    \    [NAME:Button1]
+
+Verify Confirmation
+    Win Wait Active    Order Confirmation
+    ${confirm}    Control Get Text    Order Confirmation    \    WindowsForms10.STATIC.app.0.378734a1
+    log    ${confirm}
+    Should Contain    ${confirm}    Please take note of your order reference:
